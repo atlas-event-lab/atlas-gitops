@@ -1,0 +1,15 @@
+# travel-cart-service — pre-booking cart, REST-only (no Kafka). Baseline: replica 1, no HPA.
+# Frankfurter FX is an external API (hardcoded default), so no env needed for it.
+# Deploy:  helm upgrade --install travel-cart-service ../atlas-service -f travel-cart.yaml -n atlas-apps
+
+image:
+  repository: ghcr.io/atlas-event-lab/atlas-travel-cart-service
+  tag: ""
+
+config:
+  KEYCLOAK_ISSUER_URI: http://keycloak-service.atlas-system:8080/realms/atlas
+  DB_URL: jdbc:postgresql://atlas-pg-rw.atlas-data:5432/travel_cart_db
+
+envSecret:
+  enabled: true
+  name: travel-cart-secret        # keys: DB_USERNAME, DB_PASSWORD (SealedSecret)

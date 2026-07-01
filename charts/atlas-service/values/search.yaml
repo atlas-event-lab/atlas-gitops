@@ -1,0 +1,24 @@
+# search-service — CQRS read side. Higher traffic under experiments -> HPA enabled.
+# Deploy:  helm upgrade --install search-service ../atlas-service -f search.yaml -n atlas-apps
+
+image:
+  repository: ghcr.io/atlas-event-lab/atlas-search-service
+  tag: ""
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 70
+
+podAntiAffinity:
+  enabled: false
+
+config:
+  KAFKA_BOOTSTRAP_SERVERS: atlas-kafka-bootstrap.atlas-data:9092
+  KEYCLOAK_ISSUER_URI: http://keycloak-service.atlas-system:8080/realms/atlas
+  DB_URL: jdbc:postgresql://atlas-pg-rw.atlas-data:5432/search_db
+
+envSecret:
+  enabled: true
+  name: search-secret           # keys: DB_USERNAME, DB_PASSWORD (SealedSecret)

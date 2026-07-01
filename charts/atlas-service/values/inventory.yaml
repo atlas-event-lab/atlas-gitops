@@ -1,0 +1,24 @@
+# inventory-service — Saga participant (reservation locks). HA: anti-affinity + HPA min 2.
+# Deploy:  helm upgrade --install inventory-service ../atlas-service -f inventory.yaml -n atlas-apps
+
+image:
+  repository: ghcr.io/atlas-event-lab/atlas-inventory-service
+  tag: ""
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 70
+
+podAntiAffinity:
+  enabled: true
+
+config:
+  KAFKA_BOOTSTRAP_SERVERS: atlas-kafka-bootstrap.atlas-data:9092
+  KEYCLOAK_ISSUER_URI: http://keycloak-service.atlas-system:8080/realms/atlas
+  DB_URL: jdbc:postgresql://atlas-pg-rw.atlas-data:5432/inventory_db
+
+envSecret:
+  enabled: true
+  name: inventory-secret          # keys: DB_USERNAME, DB_PASSWORD (SealedSecret)

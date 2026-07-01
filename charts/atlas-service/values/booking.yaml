@@ -1,0 +1,26 @@
+# booking-service — Saga hot-path service: HA (anti-affinity + HPA min 2).
+# Deploy:  helm upgrade --install booking-service ../atlas-service -f booking.yaml -n atlas-apps
+
+image:
+  repository: ghcr.io/atlas-event-lab/atlas-booking-service
+  tag: ""                      # set by CI to the git-sha / release tag
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 70
+
+podAntiAffinity:
+  enabled: true
+
+config:
+  KAFKA_BOOTSTRAP_SERVERS: atlas-kafka-bootstrap.atlas-data:9092
+  KEYCLOAK_ISSUER_URI: http://keycloak-service.atlas-system:8080/realms/atlas
+  DB_URL: jdbc:postgresql://atlas-pg-rw.atlas-data:5432/booking_db
+  FLIGHT_SERVICE_URL: http://flight-service:8080
+  HOTEL_SERVICE_URL: http://hotel-service:8080
+
+envSecret:
+  enabled: true
+  name: booking-secret          # keys: DB_USERNAME, DB_PASSWORD (SealedSecret)

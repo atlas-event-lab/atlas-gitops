@@ -1,0 +1,26 @@
+# payment-service — Saga participant (charges via Fake Payment Provider). HA: anti-affinity + HPA min 2.
+# PAYMENT_PROVIDER_URL points at the WireMock fake provider, which must be deployed in atlas-apps.
+# Deploy:  helm upgrade --install payment-service ../atlas-service -f payment.yaml -n atlas-apps
+
+image:
+  repository: ghcr.io/atlas-event-lab/atlas-payment-service
+  tag: ""
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 70
+
+podAntiAffinity:
+  enabled: true
+
+config:
+  KAFKA_BOOTSTRAP_SERVERS: atlas-kafka-bootstrap.atlas-data:9092
+  KEYCLOAK_ISSUER_URI: http://keycloak-service.atlas-system:8080/realms/atlas
+  DB_URL: jdbc:postgresql://atlas-pg-rw.atlas-data:5432/payment_db
+  PAYMENT_PROVIDER_URL: http://wiremock.atlas-apps:8080
+
+envSecret:
+  enabled: true
+  name: payment-secret            # keys: DB_USERNAME, DB_PASSWORD (SealedSecret)

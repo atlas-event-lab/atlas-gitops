@@ -1,0 +1,14 @@
+# user-service — self-service profile, REST-only (no Kafka). Baseline: replica 1, no HPA.
+# Deploy:  helm upgrade --install user-service ../atlas-service -f user.yaml -n atlas-apps
+
+image:
+  repository: ghcr.io/atlas-event-lab/atlas-user-service
+  tag: ""
+
+config:
+  KEYCLOAK_ISSUER_URI: http://keycloak-service.atlas-system:8080/realms/atlas
+  DB_URL: jdbc:postgresql://atlas-pg-rw.atlas-data:5432/user_db
+
+envSecret:
+  enabled: true
+  name: user-secret              # keys: DB_USERNAME, DB_PASSWORD (SealedSecret)
