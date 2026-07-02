@@ -7,7 +7,7 @@ image:
   tag: ""
 
 config:
-  KEYCLOAK_ISSUER_URI: http://keycloak-service.atlas-system:8080/realms/atlas
+  KEYCLOAK_ISSUER_URI: http://keycloak.150.230.182.80.nip.io/realms/atlas
   DB_URL: jdbc:postgresql://atlas-pg-rw.atlas-data:5432/travel_cart_db
 
 envSecret:

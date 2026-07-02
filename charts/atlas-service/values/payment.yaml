@@ -17,7 +17,7 @@ podAntiAffinity:
 
 config:
   KAFKA_BOOTSTRAP_SERVERS: atlas-kafka-bootstrap.atlas-data:9092
-  KEYCLOAK_ISSUER_URI: http://keycloak-service.atlas-system:8080/realms/atlas
+  KEYCLOAK_ISSUER_URI: http://keycloak.150.230.182.80.nip.io/realms/atlas
   DB_URL: jdbc:postgresql://atlas-pg-rw.atlas-data:5432/payment_db
   PAYMENT_PROVIDER_URL: http://wiremock.atlas-apps:8080
 
