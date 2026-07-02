@@ -1,7 +1,7 @@
 # ──────────────────────────────────────────────────────────────────────────
 # Default values for an Atlas service.
 # Deploy one release per service:  helm upgrade --install <svc> . -f values/<svc>.yaml
-# Port convention (SPEC-DEPLOY-001 §1.1): 8080 business API, 9090 actuator/management.
+# Port convention: 8080 business API, 9090 actuator/management.
 # ──────────────────────────────────────────────────────────────────────────
 
 nameOverride: ""
@@ -15,6 +15,9 @@ image:
 imagePullSecrets: []           # e.g. [{ name: ghcr-pull }]
 
 replicaCount: 1
+
+# Spring profile for all services (prod log config, no local-only beans).
+springProfiles: prod
 
 ports:
   http: 8080                   # server.port
@@ -62,8 +65,6 @@ podAntiAffinity:
 
 # Non-secret config -> ConfigMap -> injected via envFrom.
 config: {}
-#  KAFKA_BOOTSTRAP_SERVERS: atlas-kafka-bootstrap:9092
-#  KEYCLOAK_ISSUER_URI: http://keycloak.atlas-system/realms/atlas
 
 # Secret with DB creds etc. Created out-of-band (SealedSecret); injected via envFrom.
 envSecret:

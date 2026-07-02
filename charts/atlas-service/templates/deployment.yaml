@@ -70,10 +70,12 @@ spec:
             - secretRef:
                 name: {{ required "envSecret.name is required when envSecret.enabled" .Values.envSecret.name }}
             {{- end }}
-          {{- with .Values.extraEnv }}
           env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: {{ .Values.springProfiles | quote }}
+            {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- end }}
           # Probe strategy:
           #   tcp  = TCP check on the app port (no auth) — works while actuator sits on the
           #          secured management port (9090). Use this until actuator is moved to 8080.
