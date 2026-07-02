@@ -10,7 +10,7 @@ fullnameOverride: ""
 image:
   # Override per service, e.g. ghcr.io/<org>/atlas-booking-service
   repository: ghcr.io/atlas-event-lab/atlas-service
-  tag: ""                     # empty -> uses .Chart.AppVersion
+  tag: ""                     # REQUIRED: CI sets the git sha. Empty now FAILS render (no 0.0.1 fallback).
   pullPolicy: IfNotPresent
 imagePullSecrets: []           # e.g. [{ name: ghcr-pull }]
 

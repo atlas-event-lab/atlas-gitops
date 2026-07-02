@@ -37,7 +37,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 {{- end -}}
 
-{{/* Image reference (tag falls back to AppVersion). */}}
+{{/* Image reference. tag is REQUIRED (CI sets it to the immutable git sha).
+     Never fall back to Chart.AppVersion: that silently deploys a non-existent
+     tag (e.g. 0.0.1) and causes ImagePullBackOff. Fail loudly instead. */}}
 {{- define "atlas-service.image" -}}
-{{- printf "%s:%s" .Values.image.repository (.Values.image.tag | default .Chart.AppVersion) -}}
+{{- $tag := .Values.image.tag | required "image.tag is required — CI must set it to the git sha (e.g. --set image.tag=sha-<commit>). Refusing to default to Chart.AppVersion." -}}
+{{- printf "%s:%s" .Values.image.repository $tag -}}
 {{- end -}}
