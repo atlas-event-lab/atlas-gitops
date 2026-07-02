@@ -1,4 +1,5 @@
-# booking-service — Saga hot-path service: HA (anti-affinity + HPA min 2).
+# booking-service — Saga hot-path service. Lean baseline: HPA min 1 (idle = 1 pod),
+# scales to 2+ under load/experiments; anti-affinity spreads them once it does.
 # Deploy:  helm upgrade --install booking-service ../atlas-service -f booking.yaml -n atlas-apps
 
 image:
@@ -7,7 +8,7 @@ image:
 
 autoscaling:
   enabled: true
-  minReplicas: 2
+  minReplicas: 1               # lean baseline; raise to 2 during HA/Saga experiments
   maxReplicas: 4
   targetCPUUtilizationPercentage: 70
 

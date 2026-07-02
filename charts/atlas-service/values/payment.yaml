@@ -1,4 +1,5 @@
-# payment-service — Saga participant (charges via Fake Payment Provider). HA: anti-affinity + HPA min 2.
+# payment-service — Saga participant (charges via Fake Payment Provider). Lean baseline:
+# HPA min 1, scales to 2+ under load/experiments; anti-affinity spreads them once it does.
 # PAYMENT_PROVIDER_URL points at the WireMock fake provider, which must be deployed in atlas-apps.
 # Deploy:  helm upgrade --install payment-service ../atlas-service -f payment.yaml -n atlas-apps
 
@@ -8,7 +9,7 @@ image:
 
 autoscaling:
   enabled: true
-  minReplicas: 2
+  minReplicas: 1               # lean baseline; raise to 2 during HA/Saga experiments
   maxReplicas: 4
   targetCPUUtilizationPercentage: 70
 
