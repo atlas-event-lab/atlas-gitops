@@ -93,7 +93,7 @@ securityContext:
 
 # Prometheus scrape annotations (wired in Phase 6; off until actuator exposes /prometheus).
 metrics:
-  enabled: false
+  enabled: true
   path: /actuator/prometheus
 
 nodeSelector: {}
