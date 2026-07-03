@@ -18,10 +18,10 @@ podAntiAffinity:
 config:
   KAFKA_BOOTSTRAP_SERVERS: atlas-kafka-bootstrap.atlas-data:9092
   KEYCLOAK_ISSUER_URI: http://keycloak.150.230.182.80.nip.io/realms/atlas
-  DB_URL: jdbc:postgresql://atlas-pg-rw.atlas-data:5432/booking_db
+  DB_URL: jdbc:postgresql://atlas-pg-pooler-rw.atlas-data:5432/booking_db?prepareThreshold=0
   FLIGHT_SERVICE_URL: http://flight-service:8080
   HOTEL_SERVICE_URL: http://hotel-service:8080
 
 envSecret:
   enabled: true
-  name: booking-secret          # keys: DB_USERNAME, DB_PASSWORD (SealedSecret)
+  name: booking-secret
