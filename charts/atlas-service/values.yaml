@@ -59,6 +59,12 @@ autoscaling:
   maxReplicas: 3
   targetCPUUtilizationPercentage: 70
 
+# External autoscaler (KEDA ScaledObject, applied out-of-band). When true, the Deployment omits
+# `replicas` so GitOps doesn't fight KEDA's HPA. The chart does NOT render the ScaledObject —
+# it lives in deploy/platform/keda/. Do not enable together with autoscaling.enabled.
+keda:
+  enabled: false
+
 # Spread replicas across nodes (turn on for HA services: booking/inventory/payment).
 podAntiAffinity:
   enabled: false

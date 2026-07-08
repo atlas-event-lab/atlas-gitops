@@ -1,5 +1,9 @@
-# payment-service — Saga participant (charges via Fake Payment Provider). Lean baseline:
-# HPA min 1, scales to 2+ under load/experiments; anti-affinity spreads them once it does.
+# payment-service — Saga participant (charges via Fake Payment Provider).
+# Scaling: payment is I/O-bound (provider HTTP + JDBC), so CPU-based HPA barely triggers while
+# consumer lag grows. Scaling is driven by CONSUMER LAG via KEDA instead — see
+# deploy/platform/keda/payment-scaledobject.yaml and experiments/01-high-booking-concurrency/
+# payment-service-scaling.md §3.1. The chart's CPU HPA is therefore DISABLED here so it does
+# not fight KEDA's HPA; anti-affinity still spreads the pods KEDA creates.
 # PAYMENT_PROVIDER_URL points at the WireMock fake provider, which must be deployed in atlas-apps.
 # Deploy:  helm upgrade --install payment-service ../atlas-service -f payment.yaml -n atlas-apps
 
@@ -8,10 +12,10 @@ image:
   tag: ""
 
 autoscaling:
-  enabled: true
-  minReplicas: 1               # lean baseline; raise to 2 during HA/Saga experiments
-  maxReplicas: 4
-  targetCPUUtilizationPercentage: 70
+  enabled: false               # scaling is owned by KEDA (lag-based); see payment-scaledobject.yaml
+
+keda:
+  enabled: true                # Deployment omits `replicas` so GitOps doesn't fight KEDA's HPA
 
 podAntiAffinity:
   enabled: true
@@ -21,6 +25,9 @@ config:
   KEYCLOAK_ISSUER_URI: http://keycloak.150.230.182.80.nip.io/realms/atlas
   DB_URL: jdbc:postgresql://atlas-pg-pooler-rw.atlas-data:5432/payment_db?prepareThreshold=0
   PAYMENT_PROVIDER_URL: http://wiremock.atlas-apps:8080
+  # Consumer threads per pod (payment-service-scaling.md §3.2). 3 pods (KEDA max) x 2 = 6
+  # consumers = 6 partitions of inventory.reserved, no idle threads.
+  KAFKA_CONCURRENCY: "2"
 
 envSecret:
   enabled: true

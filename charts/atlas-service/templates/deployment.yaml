@@ -5,7 +5,10 @@ metadata:
   labels:
     {{- include "atlas-service.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
+  {{- /* Omit replicas when an autoscaler owns it: the built-in CPU HPA (autoscaling.enabled)
+         or an external KEDA ScaledObject (keda.enabled). Otherwise GitOps would reset replicas
+         on every sync and fight the autoscaler. */}}
+  {{- if and (not .Values.autoscaling.enabled) (not .Values.keda.enabled) }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
