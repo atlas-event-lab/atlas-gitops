@@ -1,10 +1,22 @@
-# travel-cart-service — pre-booking cart, REST-only (no Kafka). Baseline: replica 1, no HPA.
+# travel-cart-service — pre-booking cart, REST-only (no Kafka). It's on the hot path (every
+# journey creates/reprices a cart) and is CPU-bound, so it scales on CPU via a standard HPA
+# (Experiment 01 run 2026-07-08, cart-inventory-scaling.md §2.1): run 3 pinned it at 1 pod with
+# no HPA, hit ~300% CPU-of-request and ~880ms cart p95, becoming the journey bottleneck.
 # Frankfurter FX is an external API (hardcoded default), so no env needed for it.
 # Deploy:  helm upgrade --install travel-cart-service ../atlas-service -f travel-cart.yaml -n atlas-apps
 
 image:
   repository: ghcr.io/atlas-event-lab/atlas-travel-cart-service
   tag: ""
+
+autoscaling:
+  enabled: true
+  minReplicas: 1               # lean baseline; raise to 2 for HA windows
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 70
+
+podAntiAffinity:
+  enabled: true
 
 config:
   KEYCLOAK_ISSUER_URI: http://keycloak.150.230.182.80.nip.io/realms/atlas
