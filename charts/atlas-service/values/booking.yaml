@@ -21,6 +21,8 @@ config:
   DB_URL: jdbc:postgresql://atlas-pg-pooler-rw.atlas-data:5432/booking_db?prepareThreshold=0
   FLIGHT_SERVICE_URL: http://flight-service:8080
   HOTEL_SERVICE_URL: http://hotel-service:8080
+  REDIS_HOST: redis.atlas-data
+  REDIS_PORT: "6379"
 
 envSecret:
   enabled: true

@@ -21,6 +21,8 @@ podAntiAffinity:
 config:
   KEYCLOAK_ISSUER_URI: http://keycloak.150.230.182.80.nip.io/realms/atlas
   DB_URL: jdbc:postgresql://atlas-pg-pooler-rw.atlas-data:5432/travel_cart_db?prepareThreshold=0
+  REDIS_HOST: redis.atlas-data
+  REDIS_PORT: "6379"
 
 envSecret:
   enabled: true
