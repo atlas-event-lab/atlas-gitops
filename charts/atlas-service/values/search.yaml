@@ -16,9 +16,15 @@ podAntiAffinity:
 
 config:
   KAFKA_BOOTSTRAP_SERVERS: atlas-kafka-bootstrap.atlas-data:9092
-  KEYCLOAK_ISSUER_URI: http://keycloak.150.230.182.80.nip.io/realms/atlas
   DB_URL: jdbc:postgresql://atlas-pg-pooler-rw.atlas-data:5432/search_db?prepareThreshold=0
 
 envSecret:
   enabled: true
   name: search-secret
+
+extraEnv:
+  - name: KEYCLOAK_ISSUER_URI
+    valueFrom:
+      secretKeyRef:
+        name: atlas-issuer
+        key: KEYCLOAK_ISSUER_URI

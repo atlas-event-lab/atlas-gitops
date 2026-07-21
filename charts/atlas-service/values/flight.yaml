@@ -7,10 +7,16 @@ image:
 
 config:
   KAFKA_BOOTSTRAP_SERVERS: atlas-kafka-bootstrap.atlas-data:9092
-  KEYCLOAK_ISSUER_URI: http://keycloak.150.230.182.80.nip.io/realms/atlas
   DB_URL: jdbc:postgresql://atlas-pg-pooler-rw.atlas-data:5432/flight_db?prepareThreshold=0
   INVENTORY_SERVICE_URL: http://inventory-service:8080
 
 envSecret:
   enabled: true
   name: flight-secret
+
+extraEnv:
+  - name: KEYCLOAK_ISSUER_URI
+    valueFrom:
+      secretKeyRef:
+        name: atlas-issuer
+        key: KEYCLOAK_ISSUER_URI
